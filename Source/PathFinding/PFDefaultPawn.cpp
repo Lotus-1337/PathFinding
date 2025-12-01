@@ -61,7 +61,6 @@ void APFDefaultPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	}
 
 
-	EIC->BindAction(MouseMoveAction, ETriggerEvent::Triggered, this, &APFDefaultPawn::MoveMouse);
 	EIC->BindAction(MouseClickAction, ETriggerEvent::Triggered, this, &APFDefaultPawn::ClickMouse);
 	 
 	FInputModeGameAndUI InputMode;
@@ -70,11 +69,6 @@ void APFDefaultPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	InputMode.SetHideCursorDuringCapture(false);
 
 	PC->SetInputMode(InputMode);
-}
-
-void APFDefaultPawn::MoveMouse()
-{
-
 }
 
 void APFDefaultPawn::ClickMouse()

@@ -46,9 +46,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
-
-	UFUNCTION()
-	void MoveMouse();
 	
 	UFUNCTION()
 	void ClickMouse();
