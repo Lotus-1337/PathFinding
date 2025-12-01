@@ -7,6 +7,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+#include "Grid.h"
+
 // Sets default values
 APFDefaultPawn::APFDefaultPawn()
 {
@@ -22,6 +24,19 @@ void APFDefaultPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	Grid = NewObject<UGrid>(GetWorld());
+
+	FVector2D GridSize = FVector2D(100, 100);
+
+	Grid->CreateGrid(GridSize, FVector::ZeroVector);
+
+	FNode Node;
+
+	Node.SetLocation(FVector(-1000.0f, 1000.0f, 0.0f));
+	Node.CalculateH(FVector::ZeroVector);
+
+	UE_LOG(LogTemp, Error, TEXT("Custom Node Heuretic: %d"), Node.GetH());
+
 }
 
 // Called every frame

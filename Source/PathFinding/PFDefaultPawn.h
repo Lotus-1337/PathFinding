@@ -8,6 +8,8 @@
 
 class UCameraComponent;
 
+class UGrid;
+
 UCLASS()
 class PATHFINDING_API APFDefaultPawn : public APawn
 {
@@ -29,6 +31,9 @@ protected:
 
 
 protected:
+
+	UPROPERTY(VisibleAnywhere, Category = "A* Grid")
+	UGrid *Grid;
 
 public:
 	// Sets default values for this pawn's properties
