@@ -34,7 +34,7 @@ void UGrid::CreateGrid(const FVector2D& NewGridSize, const FVector & GridCenter)
 	for (int32 i = 0; i < GridSize.X; i++)
 	{
 		
-		TArray<FNode*> NewArray;
+		TArray<FNode> NewArray;
 
 		for (int32 j = 0; j < GridSize.Y; j++)
 		{
@@ -44,13 +44,11 @@ void UGrid::CreateGrid(const FVector2D& NewGridSize, const FVector & GridCenter)
 			NewNode.SetIndexes(j, i);
 			NewNode.SetLocation(CurrNodeLoc);
 
-			NewArray.Add(&NewNode);
+			NewArray.Add(NewNode);
 
 			CurrNodeLoc.X += FNode::NodeSize.X;
 
 			NodeIndex++;
-
-			UE_LOG(LogTemp, Log, TEXT("Created A %d th Node At Location %s"), NodeIndex, *CurrNodeLoc.ToString());
 
 		}
 
@@ -69,34 +67,15 @@ void UGrid::CreateGrid(const FVector2D& NewGridSize, const FVector & GridCenter)
 
 }
 
-TArray<FNode*> UGrid::FindPath(const FVector& Start, const FVector& Finish)
+TArray<FNode> UGrid::FindPath(int32 StartIndexX, int32 StartIndexY, int32 FinishIndexX, int32 FinishIndexY)
 {
 
-	int32 StartIndexX;
-	int32 StartIndexY;
+	FNode StartNode = NodesArray[StartIndexX][StartIndexY];
+	FNode FinishNode = NodesArray[FinishIndexX][FinishIndexY];
 
-	if (!GetNodeIndexByLocation(Start, StartIndexX, StartIndexY))
-	{
-		UE_LOG(LogTemp, Error, TEXT("Start Location is invalid. "));
-		return GetEmptyArray();
-	}
-
-	int32 FinishIndexX;
-	int32 FinishIndexY;
-
-	if (!GetNodeIndexByLocation(Finish, FinishIndexX, FinishIndexY))
-	{
-		UE_LOG(LogTemp, Error, TEXT("Finish Location is invalid. "));
-		return GetEmptyArray();
-	}
-
-	FNode* StartNode = NodesArray[StartIndexX][StartIndexY];
-	FNode* FinishNode = NodesArray[FinishIndexX][FinishIndexY];
-
-	TArray<FNode*> EndArray = { StartNode, FinishNode };
-
+	TArray<FNode> EndArray = { StartNode, FinishNode };
+	
 	return EndArray;
-
 
 }
 
@@ -120,10 +99,9 @@ bool UGrid::GetNodeIndexByLocation(const FVector& Location, int32& X, int32& Y)
 
 }
 
-TArray<FNode*> UGrid::GetEmptyArray()
+TArray<FNode> UGrid::GetEmptyArray()
 {
 
-	TArray<FNode*> Arr;
-	return Arr;
+	return TArray<FNode>();
 
 }

@@ -42,8 +42,13 @@ void APFDefaultPawn::BeginPlay()
 
 	SetActorTransform(NewTransform);
 
-	StartNode  = FVector::ZeroVector;
-	FinishNode = FVector::ZeroVector;
+	StartIndexX = 0;
+	StartIndexY = 0;
+
+	FinishIndexX = 0;
+	FinishIndexY = 0;
+
+	State = EClickingState::Start;
 
 }
 
@@ -84,7 +89,7 @@ void APFDefaultPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	}
 
 
-	EIC->BindAction(MouseClickAction, ETriggerEvent::Triggered, this, &APFDefaultPawn::ClickMouse);
+	EIC->BindAction(MouseClickAction, ETriggerEvent::Started, this, &APFDefaultPawn::ClickMouse);
 	 
 	FInputModeGameAndUI InputMode;
 
@@ -99,14 +104,15 @@ void APFDefaultPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void APFDefaultPawn::ClickMouse()
 {
 
+
 	SetupPathFinding();
 
-	TArray<FNode*> Arr = Grid->FindPath(StartNode, FinishNode);
+	TArray<FNode> Arr = Grid->FindPath(StartIndexX, StartIndexY, FinishIndexX, FinishIndexY);
 
-	for (FNode* Node : Arr)
+	for (FNode& Node : Arr)
 	{
 
-		UE_LOG(LogTemp, Log, TEXT("Node Loc: %s | Node X: %d | Node Y: %d "), *Node->GetLocation().ToString(), Node->IndexX, Node->IndexY);
+		UE_LOG(LogTemp, Log, TEXT("Node Loc: %s | Node X: %d | Node Y: %d "), *Node.GetLocation().ToString(), Node.IndexX, Node.IndexY);
 
 	}
 
@@ -135,19 +141,25 @@ void APFDefaultPawn::SetupPathFinding()
 
 	PC->GetMousePosition(MousePositionX, MousePositionY);
 
-	// How Many Nodes could Fit in MousePosition?
-	FVector2D ChosenNode = FVector2D(MousePositionX / NodeSizeInViewportX, MousePositionY / NodeSizeInViewportY);
 
 	if (State == EClickingState::Start)
 	{
-		// ChosenNode is an index, changing it to a location
-		StartNode = FVector(ChosenNode.X * FNode::NodeSize.X, ChosenNode.Y * FNode::NodeSize.X, 0.0f);
+		
+		StartIndexX = MousePositionX / NodeSizeInViewportX;
+		StartIndexY = MousePositionY / NodeSizeInViewportY;
+
+		UE_LOG(LogTemp, Log, TEXT("StartNode : %d, %d"), StartIndexX, StartIndexY);
 		State = EClickingState::End;
+
 	}
 	else if (State == EClickingState::End)
 	{
-		// ChosenNode is an index, changing it to a location
-		FinishNode = FVector(ChosenNode.X * FNode::NodeSize.X, ChosenNode.Y * FNode::NodeSize.X, 0.0f);
+
+		FinishIndexX = MousePositionX / NodeSizeInViewportX;
+		FinishIndexY = MousePositionY / NodeSizeInViewportY;
+
+		UE_LOG(LogTemp, Log, TEXT("FinishNode : %d, %d"), FinishIndexX, FinishIndexY);
 		State = EClickingState::Start;
+
 	}
 }

@@ -48,8 +48,11 @@ protected:
 
 	EClickingState State;
 
-	FVector StartNode;	
-	FVector FinishNode;
+	int32 StartIndexX; 
+	int32 StartIndexY;
+
+	int32 FinishIndexX; 
+	int32 FinishIndexY;
 
 public:
 	// Sets default values for this pawn's properties

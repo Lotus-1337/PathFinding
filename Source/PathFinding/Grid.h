@@ -108,7 +108,7 @@ class PATHFINDING_API UGrid : public UObject
 protected:
 
 	/** Array of Nodes */
-	TArray<TArray<FNode*>> NodesArray;
+	TArray<TArray<FNode>> NodesArray;
 
 	FVector2D GridSize;
 
@@ -120,13 +120,13 @@ public:
 	void CreateGrid(const FVector2D & NewGridSize, const FVector & GridCenter);
 	
 	
-	TArray<FNode*> FindPath(const FVector& Start, const FVector& Finish);
+	TArray<FNode> FindPath(int32 StartIndexX, int32 StartIndexY, int32 FinishIndexX, int32 FinishIndexY);
 
 protected:
 
 	bool GetNodeIndexByLocation(const FVector& Location, int32& X, int32& Y);
 
-	TArray<FNode*> GetEmptyArray();
+	TArray<FNode> GetEmptyArray();
 
 
 public:
