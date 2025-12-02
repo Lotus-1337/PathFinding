@@ -13,7 +13,7 @@
 APFDefaultPawn::APFDefaultPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	CameraComponent = CreateDefaultSubobject < UCameraComponent>(TEXT("Camera Component"));
 
@@ -26,7 +26,7 @@ void APFDefaultPawn::BeginPlay()
 	
 	Grid = NewObject<UGrid>(GetWorld());
 
-	FVector2D GridSize = FVector2D(100, 100);
+	FVector2D GridSize = FVector2D(30, 16);
 
 	Grid->CreateGrid(GridSize, FVector::ZeroVector);
 
@@ -36,6 +36,14 @@ void APFDefaultPawn::BeginPlay()
 	Node.CalculateH(FVector::ZeroVector);
 
 	UE_LOG(LogTemp, Error, TEXT("Custom Node Heuretic: %d"), Node.GetH());
+
+
+	FTransform NewTransform = FTransform(FRotator(-90.0f, -90.0f, 0.0f), FVector(0.0f, 0.0f, 3520.0f), FVector::OneVector);
+
+	SetActorTransform(NewTransform);
+
+	StartNode  = FVector::ZeroVector;
+	FinishNode = FVector::ZeroVector;
 
 }
 
@@ -54,7 +62,7 @@ void APFDefaultPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	APlayerController* PC = Cast<APlayerController>(Controller);
 	if (!PC)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Player Controller is invalid."));
+		UE_LOG(LogTemp, Error, TEXT("Player Controller is invalid. APFDefaultPawn::SetupPlayerInputComponent"));
 		return;
 	}
 
@@ -84,9 +92,54 @@ void APFDefaultPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	InputMode.SetHideCursorDuringCapture(false);
 
 	PC->SetInputMode(InputMode);
+
+	PC->SetShowMouseCursor(true);
 }
 
 void APFDefaultPawn::ClickMouse()
 {
+
+	APlayerController* PC = Cast<APlayerController>(Controller);
+	if (!PC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player Controller is invalid. APFDefaultPawn::ClickMouse"));
+		return;
+	}
+
+	
+
+	int32 ViewportSizeX;
+	int32 ViewportSizeY;
+	PC->GetViewportSize(ViewportSizeX, ViewportSizeY);
+
+	int32 NodeSizeInViewportX = ViewportSizeX / Grid->GetGridSize().X;
+	int32 NodeSizeInViewportY = ViewportSizeY / Grid->GetGridSize().Y;
+	
+	float MousePositionX;
+	float  MousePositionY;
+
+	PC->GetMousePosition(MousePositionX, MousePositionY);
+
+	FVector2D ChosenNode = FVector2D(MousePositionX / NodeSizeInViewportX, MousePositionY / NodeSizeInViewportY);
+
+	if (State == EClickingState::Start)
+	{
+		StartNode = FVector(ChosenNode.X, ChosenNode.Y, 0.0f);
+		State = EClickingState::End;
+	}
+	else if (State == EClickingState::End)
+	{
+		FinishNode = FVector(ChosenNode.X, ChosenNode.Y, 0.0f);
+		State = EClickingState::Start;
+	}
+
+	TArray<FNode*> Arr = Grid->FindPath(StartNode, FinishNode);
+
+	for (FNode* Node : Arr)
+	{
+
+		UE_LOG(LogTemp, Log, TEXT("Node Loc: %s | Node X: %d | Node Y: %d "), *Node->GetLocation().ToString(), Node->IndexX, Node->IndexY);
+
+	}
 
 }

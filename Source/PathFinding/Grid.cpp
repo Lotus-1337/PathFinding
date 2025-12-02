@@ -16,11 +16,11 @@ void UGrid::CreateGrid(const FVector2D& NewGridSize, const FVector & GridCenter)
 
 	GridSize = NewGridSize;
 
-	FVector StartingNodeLoc = GridCenter;
+	StartingNodeLocation = GridCenter;
 
-	StartingNodeLoc -= FVector((GridSize.X / 2 * FNode::NodeSize.X), (GridSize.Y / 2 * FNode::NodeSize.Y), 0.0f);
+	StartingNodeLocation -= FVector((GridSize.X / 2 * FNode::NodeSize.X), (GridSize.Y / 2 * FNode::NodeSize.Y), 0.0f);
 
-	FVector CurrNodeLoc = StartingNodeLoc;
+	FVector CurrNodeLoc = StartingNodeLocation;
 
 
 	int32 NodeArrSize = GridSize.X * GridSize.Y;
@@ -29,8 +29,12 @@ void UGrid::CreateGrid(const FVector2D& NewGridSize, const FVector & GridCenter)
 
 	NodesArray.Reserve(NodeArrSize);
 
+	
+
 	for (int32 i = 0; i < GridSize.X; i++)
 	{
+		
+		TArray<FNode*> NewArray;
 
 		for (int32 j = 0; j < GridSize.Y; j++)
 		{
@@ -40,7 +44,7 @@ void UGrid::CreateGrid(const FVector2D& NewGridSize, const FVector & GridCenter)
 			NewNode.SetIndexes(j, i);
 			NewNode.SetLocation(CurrNodeLoc);
 
-			NodesArray.Add(NewNode);
+			NewArray.Add(&NewNode);
 
 			CurrNodeLoc.X += FNode::NodeSize.X;
 
@@ -50,8 +54,10 @@ void UGrid::CreateGrid(const FVector2D& NewGridSize, const FVector & GridCenter)
 
 		}
 
-		CurrNodeLoc.X += StartingNodeLoc.X;
+		CurrNodeLoc.X += StartingNodeLocation.X;
 		CurrNodeLoc.Y += FNode::NodeSize.Y;
+
+		NodesArray.Add(NewArray);
 
 	}
 
@@ -60,5 +66,64 @@ void UGrid::CreateGrid(const FVector2D& NewGridSize, const FVector & GridCenter)
 		UE_LOG(LogTemp, Warning, TEXT("Amount of Nodes is less than Expected Arr Size. "));
 		NodesArray.Shrink();
 	}
+
+}
+
+TArray<FNode*> UGrid::FindPath(const FVector& Start, const FVector& Finish)
+{
+
+	int32 StartIndexX;
+	int32 StartIndexY;
+
+	if (!GetNodeIndexByLocation(Start, StartIndexX, StartIndexY))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Start Location is invalid. "));
+		return GetEmptyArray();
+	}
+
+	int32 FinishIndexX;
+	int32 FinishIndexY;
+
+	if (!GetNodeIndexByLocation(Finish, FinishIndexX, FinishIndexY))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Finish Location is invalid. "));
+		return GetEmptyArray();
+	}
+
+	FNode* StartNode = NodesArray[StartIndexX][StartIndexY];
+	FNode* FinishNode = NodesArray[FinishIndexX][FinishIndexY];
+
+	TArray<FNode*> EndArray = { StartNode, FinishNode };
+
+	return EndArray;
+
+
+}
+
+bool UGrid::GetNodeIndexByLocation(const FVector& Location, int32& X, int32& Y)
+{
+
+	FVector LocationDiff = Location - StartingNodeLocation;
+
+	X = FMath::Abs(LocationDiff.X) / FNode::NodeSize.X;
+	Y = FMath::Abs(LocationDiff.Y) / FNode::NodeSize.Y;
+
+	if (NodesArray.IsValidIndex(X) && NodesArray[X].IsValidIndex(Y))
+	{
+		return true;
+	}
+
+	X = 0;
+	Y = 0;
+
+	return false;
+
+}
+
+TArray<FNode*> UGrid::GetEmptyArray()
+{
+
+	TArray<FNode*> Arr;
+	return Arr;
 
 }

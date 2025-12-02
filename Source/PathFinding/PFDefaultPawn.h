@@ -10,6 +10,17 @@ class UCameraComponent;
 
 class UGrid;
 
+
+// What are we going to do next?
+UENUM()
+enum class EClickingState : uint8
+{
+
+	Start,
+	End
+
+};
+
 UCLASS()
 class PATHFINDING_API APFDefaultPawn : public APawn
 {
@@ -34,6 +45,11 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "A* Grid")
 	UGrid *Grid;
+
+	EClickingState State;
+
+	FVector StartNode;	
+	FVector FinishNode;
 
 public:
 	// Sets default values for this pawn's properties

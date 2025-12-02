@@ -73,6 +73,11 @@ public:
 		return F;
 	}
 
+	FORCEINLINE FVector GetLocation()
+	{
+		return NodeLocation;
+	}
+
 	FORCEINLINE void SetG(const int32& NewG)
 	{
 		G = NewG;
@@ -82,6 +87,7 @@ public:
 	{
 		NodeLocation = NewLocation;
 	}
+
 
 	FORCEINLINE void SetIndexes(const int32& X, const int32& Y)
 	{
@@ -102,12 +108,35 @@ class PATHFINDING_API UGrid : public UObject
 protected:
 
 	/** Array of Nodes */
-	TArray<FNode> NodesArray;
+	TArray<TArray<FNode*>> NodesArray;
 
 	FVector2D GridSize;
+
+	/** Location of the Starting Node */
+	FVector StartingNodeLocation;
 
 public:
 
 	void CreateGrid(const FVector2D & NewGridSize, const FVector & GridCenter);
 	
+	
+	TArray<FNode*> FindPath(const FVector& Start, const FVector& Finish);
+
+protected:
+
+	bool GetNodeIndexByLocation(const FVector& Location, int32& X, int32& Y);
+
+	TArray<FNode*> GetEmptyArray();
+
+
+public:
+
+	// INLINES
+
+
+	FORCEINLINE FVector2D GetGridSize()
+	{
+		return GridSize;
+	}
+
 };
