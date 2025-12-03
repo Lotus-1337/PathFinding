@@ -45,6 +45,8 @@ void ANodesHUD::DrawHUD()
 
 		DrawRect(Color, X, Y, NodeSizeX, NodeSizeY);
 
+		UE_LOG(LogTemp, Log, TEXT("Drawn Rectangle at: X - %d | Y - %d "), X, Y);
+
 	}
 
 }
