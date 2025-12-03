@@ -8,6 +8,7 @@
 #include "EnhancedInputSubsystems.h"
 
 #include "Grid.h"
+#include "NodesHUD.h"
 
 // Sets default values
 APFDefaultPawn::APFDefaultPawn()
@@ -49,6 +50,31 @@ void APFDefaultPawn::BeginPlay()
 	FinishIndexY = 0;
 
 	State = EClickingState::Start;
+
+	APlayerController* PC = Cast<APlayerController>(Controller);
+	if (!PC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player Controller is invalid. APFDefaultPawn::BeginPlay"));
+		return;
+	}
+
+	ANodesHUD* NodesHUD = Cast<ANodesHUD>(PC->GetHUD());
+
+	if (!NodesHUD)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Nodes HUD is invalid. APFDefaultPawn::BeginPlay"));
+		return;
+	}
+
+	int32 ViewportSizeX;
+	int32 ViewportSizeY;
+	PC->GetViewportSize(ViewportSizeX, ViewportSizeY);
+
+	//	How many Nodes Per ViewportSize? 
+	NodeSizeInViewportX = ViewportSizeX / Grid->GetGridSize().X;
+	NodeSizeInViewportY = ViewportSizeY / Grid->GetGridSize().Y;
+
+	NodesHUD->SetNodeSize(NodeSizeInViewportX, NodeSizeInViewportY);
 
 }
 
@@ -116,6 +142,23 @@ void APFDefaultPawn::ClickMouse()
 
 	}
 
+	APlayerController* PC = Cast<APlayerController>(Controller);
+	if (!PC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player Controller is invalid. APFDefaultPawn::ClickMouse"));
+		return;
+	}
+
+	ANodesHUD* NodesHUD = Cast<ANodesHUD>(PC->GetHUD());
+
+	if (!NodesHUD)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Nodes HUD is invalid. APFDefaultPawn::ClickMouse"));
+		return;
+	}
+
+	NodesHUD->SetNodesArray(MoveTemp(Arr));
+
 }
 
 void APFDefaultPawn::SetupPathFinding()
@@ -126,15 +169,6 @@ void APFDefaultPawn::SetupPathFinding()
 		UE_LOG(LogTemp, Error, TEXT("Player Controller is invalid. APFDefaultPawn::ClickMouse"));
 		return;
 	}
-
-
-	int32 ViewportSizeX;
-	int32 ViewportSizeY;
-	PC->GetViewportSize(ViewportSizeX, ViewportSizeY);
-
-	//	How many Nodes Per ViewportSize? 
-	int32 NodeSizeInViewportX = ViewportSizeX / Grid->GetGridSize().X;
-	int32 NodeSizeInViewportY = ViewportSizeY / Grid->GetGridSize().Y;
 
 	float MousePositionX;
 	float  MousePositionY;

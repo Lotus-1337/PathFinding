@@ -54,6 +54,9 @@ protected:
 	int32 FinishIndexX; 
 	int32 FinishIndexY;
 
+	int32 NodeSizeInViewportX;
+	int32 NodeSizeInViewportY;
+
 public:
 	// Sets default values for this pawn's properties
 	APFDefaultPawn();
