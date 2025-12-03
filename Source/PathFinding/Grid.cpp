@@ -11,6 +11,14 @@ void FNode::CalculateH(const FVector & FinishLocation)
 		( FMath::Abs(NodeLocation.Y - FinishLocation.X) / FNode::NodeSize.Y );
 }
 
+void FNode::GetTopLeftCornerLocation(float& X, float& Y)
+{
+
+	X = NodeLocation.X -= ( FNode::NodeSize.X / 2 );
+	Y = NodeLocation.Y -= ( FNode::NodeSize.Y / 2 );
+
+}
+
 void UGrid::CreateGrid(const FVector2D& NewGridSize, const FVector & GridCenter)
 {
 

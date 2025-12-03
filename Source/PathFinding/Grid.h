@@ -52,6 +52,8 @@ public:
 	static FVector2D NodeSize;
 
 
+	void GetTopLeftCornerLocation(float& X, float& Y);
+
 	FORCEINLINE void CalculateF()
 	{
 		F = G + H;
@@ -94,6 +96,7 @@ public:
 		IndexX = X;
 		IndexY = Y;
 	}
+
 
 };
 
