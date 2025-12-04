@@ -82,10 +82,15 @@ TArray<FNode> UGrid::FindPath(int32 StartIndexX, int32 StartIndexY, int32 Finish
 	FNode FinishNode = NodesArray[FinishIndexX][FinishIndexY];
 
 	TArray<FNode> EndArray = { StartNode, FinishNode };
-	
-	ReverseArray(EndArray);
 
-	return EndArray;
+	TArray<FNode> OpenList;
+	TSet<FNode> OpenSet;
+	TSet<FNode> ClosedSet;
+	
+	OpenList.Heapify(FCompareNodes());
+
+
+	return ReconstructPath(EndArray.Last());
 
 }
 
@@ -113,6 +118,34 @@ TArray<FNode> UGrid::GetEmptyArray()
 {
 
 	return TArray<FNode>();
+
+}
+
+TArray<FNode> UGrid::ReconstructPath(FNode& LastNode)
+{
+
+	FNode *TraversalNode = &LastNode;
+
+	TArray<FNode> NewArray;
+
+	while (TraversalNode)
+	{
+
+		NewArray.Add(*TraversalNode);
+
+		if (!TraversalNode->ParentNode)
+		{
+			break;
+		}
+
+		TraversalNode = TraversalNode->ParentNode;
+
+
+	}
+
+	ReverseArray(NewArray);
+
+	return NewArray;
 
 }
 

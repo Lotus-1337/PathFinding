@@ -34,6 +34,9 @@ protected:
 
 public:
 
+	/** Parent Node Of this Node, The one that comes before it in the Path */
+	FNode* ParentNode;
+
 	/** X Index Of This Node In Nodes Array*/
 	UPROPERTY(VisibleAnywhere, Category = "Node's Data")
 	int32 IndexX;
@@ -100,6 +103,14 @@ public:
 
 };
 
+struct FCompareNodes
+{
+	FORCEINLINE bool operator()(FNode& A, FNode& B)
+	{
+		return A.GetF() < B.GetF();
+	}
+};
+
 /**
  * 
  */
@@ -136,6 +147,9 @@ protected:
 
 	/** Swapping Nodes Function for convenient reversing */
 	void SwapNodes(FNode& NodeA, FNode& NodeB);
+
+	/** Returns a TArray of Nodes To Get To the Last Node */
+	TArray<FNode> ReconstructPath(FNode& LastNode);
 
 public:
 
