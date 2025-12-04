@@ -35,17 +35,24 @@ void ANodesHUD::DrawHUD()
 		return;
 	}
 
-	FLinearColor Color = FLinearColor::Red;
+	FLinearColor Color = FLinearColor::Green;
+
+	int32 Index = 0;
+	int32 LastIndex = NodesArray.Num() - 1;
 
 	for (FNode& Node : NodesArray)
 	{
+
+		if (Index == 0 || Index == LastIndex)
+		{
+			Color = FLinearColor::Blue;
+		}
 
 		float X = Node.IndexX * NodeSizeX;
 		float Y = Node.IndexY * NodeSizeY;
 
 		DrawRect(Color, X, Y, NodeSizeX, NodeSizeY);
 
-		UE_LOG(LogTemp, Log, TEXT("Drawn Rectangle at: X - %d | Y - %d "), X, Y);
 
 	}
 

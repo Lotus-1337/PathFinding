@@ -27,19 +27,12 @@ void APFDefaultPawn::BeginPlay()
 	
 	Grid = NewObject<UGrid>(GetWorld());
 
-	FVector2D GridSize = FVector2D(30, 16);
+	FVector2D GridSize = FVector2D(32, 18);
 
 	Grid->CreateGrid(GridSize, FVector::ZeroVector);
 
-	FNode Node;
 
-	Node.SetLocation(FVector(-1000.0f, 1000.0f, 0.0f));
-	Node.CalculateH(FVector::ZeroVector);
-
-	UE_LOG(LogTemp, Error, TEXT("Custom Node Heuretic: %d"), Node.GetH());
-
-
-	FTransform NewTransform = FTransform(FRotator(-90.0f, -90.0f, 0.0f), FVector(0.0f, 0.0f, 3520.0f), FVector::OneVector);
+	FTransform NewTransform = FTransform(FRotator(-90.0f, -90.0f, 0.0f), FVector(0.0f, 0.0f, 970.0f), FVector::OneVector);
 
 	SetActorTransform(NewTransform);
 
@@ -69,6 +62,8 @@ void APFDefaultPawn::BeginPlay()
 	int32 ViewportSizeX;
 	int32 ViewportSizeY;
 	PC->GetViewportSize(ViewportSizeX, ViewportSizeY);
+
+	UE_LOG(LogTemp, Warning, TEXT("Viewport Size: X: %d | Y: %d"), ViewportSizeX, ViewportSizeY);
 
 	//	How many Nodes Per ViewportSize? 
 	NodeSizeInViewportX = ViewportSizeX / Grid->GetGridSize().X;

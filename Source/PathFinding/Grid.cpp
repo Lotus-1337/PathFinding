@@ -3,7 +3,7 @@
 
 #include "Grid.h"
 
-FVector2D FNode::NodeSize = FVector2D(100.0f, 100.0f);
+FVector2D FNode::NodeSize = FVector2D(80.0f, 80.0f);
 
 void FNode::CalculateH(const FVector & FinishLocation)
 {
@@ -49,7 +49,7 @@ void UGrid::CreateGrid(const FVector2D& NewGridSize, const FVector & GridCenter)
 
 			FNode NewNode;
 
-			NewNode.SetIndexes(j, i);
+			NewNode.SetIndexes(i, j);
 			NewNode.SetLocation(CurrNodeLoc);
 
 			NewArray.Add(NewNode);
@@ -83,6 +83,8 @@ TArray<FNode> UGrid::FindPath(int32 StartIndexX, int32 StartIndexY, int32 Finish
 
 	TArray<FNode> EndArray = { StartNode, FinishNode };
 	
+	ReverseArray(EndArray);
+
 	return EndArray;
 
 }
@@ -111,5 +113,31 @@ TArray<FNode> UGrid::GetEmptyArray()
 {
 
 	return TArray<FNode>();
+
+}
+
+void UGrid::ReverseArray(TArray<FNode>& Array)
+{
+
+	int32 ArrSize = Array.Num() / 2;
+
+	for (int32 i = 0; i < ArrSize; i++)
+	{
+	
+		SwapNodes(Array[i], Array[ArrSize - 1 - i]);
+
+	}
+
+
+}
+
+void UGrid::SwapNodes(FNode& NodeA, FNode& NodeB)
+{
+
+	FNode TempNode = NodeA;
+
+	NodeA = NodeB;
+
+	NodeB = TempNode;
 
 }

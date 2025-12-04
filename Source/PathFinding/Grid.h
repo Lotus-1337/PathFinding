@@ -131,6 +131,11 @@ protected:
 
 	TArray<FNode> GetEmptyArray();
 
+	/** Reversing the Array so the first one is the Starting One instead of The Finishing One*/
+	void ReverseArray(TArray<FNode>& Array);
+
+	/** Swapping Nodes Function for convenient reversing */
+	void SwapNodes(FNode& NodeA, FNode& NodeB);
 
 public:
 
