@@ -165,13 +165,13 @@ public:
 	void CreateGrid(const FVector2D & NewGridSize, const FVector & GridCenter);
 	
 	
-	TArray<FNode> FindPath(int32 StartIndexX, int32 StartIndexY, int32 FinishIndexX, int32 FinishIndexY);
+	[[nodiscard]] TArray<FNode> FindPath(int32 StartIndexX, int32 StartIndexY, int32 FinishIndexX, int32 FinishIndexY);
 
 protected:
 
 	bool GetNodeIndexByLocation(const FVector& Location, int32& X, int32& Y);
 
-	TArray<FNode> GetEmptyArray();
+	[[nodiscard]] TArray<FNode> GetEmptyArray();
 
 	/** Reversing the Array so the first one is the Starting One instead of The Finishing One*/
 	void ReverseArray(TArray<FNode>& Array);
@@ -180,15 +180,15 @@ protected:
 	void SwapNodes(FNode& NodeA, FNode& NodeB);
 
 	/** Returns a TArray of Nodes To Get To the Last Node */
-	TArray<FNode> ReconstructPath(FNode& LastNode);
+	[[nodiscard]] TArray<FNode> ReconstructPath(FNode& LastNode);
 
 	/** Returns Array of Node's Neighbours ( Only the valid ones ) */
 	void GetNeighbours(TArray<FNode*> & NeighboursArr, const FNode& Node);
 
-	/** Restoring All the Nodes in the Set to Default Values. Pass All the sets, where there are nodes.
+	/** Restoring All the Nodes in the Set to Default Values. Pass UsedNodes Array.
 	Not resetting The main Array because most of the Nodes Would be cleaned without purpose. 
-	Cleaning Sets is a HUGE Performance boost. */
-	void CleanSet(TSet<FNode*> &SetToClean);
+	Cleaning that Array is a HUGE Performance boost. */
+	void CleanArray(TArray<FNode*> &ArrToClean);
 
 public:
 
