@@ -81,6 +81,8 @@ TArray<FNode> UGrid::FindPath(int32 StartIndexX, int32 StartIndexY, int32 Finish
 	FNode StartNode = NodesArray[StartIndexX][StartIndexY];
 	FNode FinishNode = NodesArray[FinishIndexX][FinishIndexY];
 
+	FinishNode.ParentNode = &StartNode;
+
 	TArray<FNode> EndArray = { StartNode, FinishNode };
 
 	TArray<FNode> OpenList;
