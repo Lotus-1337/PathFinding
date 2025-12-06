@@ -35,7 +35,7 @@ void ANodesHUD::DrawHUD()
 		return;
 	}
 
-	FLinearColor Color = FLinearColor::Green;
+	FLinearColor Color = FLinearColor::Blue;
 
 	int32 Index = 0;
 	int32 LastIndex = NodesArray.Num() - 1;
@@ -47,12 +47,17 @@ void ANodesHUD::DrawHUD()
 		{
 			Color = FLinearColor::Blue;
 		}
+		else
+		{
+			Color = FLinearColor::Green;
+		}
 
 		float X = Node.IndexX * NodeSizeX;
 		float Y = Node.IndexY * NodeSizeY;
 
 		DrawRect(Color, X, Y, NodeSizeX, NodeSizeY);
 
+		Index++;
 
 	}
 

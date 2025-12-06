@@ -11,6 +11,12 @@ void FNode::CalculateH(const FVector & FinishLocation)
 		( FMath::Abs(NodeLocation.Y - FinishLocation.X) / FNode::NodeSize.Y );
 }
 
+void FNode::CalculateH(const FNode& FinishNode)
+{
+	H = (FMath::Abs(IndexX - FinishNode.IndexX)) +
+		(FMath::Abs(IndexY - FinishNode.IndexY));
+}
+
 void FNode::GetTopLeftCornerLocation(float& X, float& Y)
 {
 
@@ -78,21 +84,90 @@ void UGrid::CreateGrid(const FVector2D& NewGridSize, const FVector & GridCenter)
 TArray<FNode> UGrid::FindPath(int32 StartIndexX, int32 StartIndexY, int32 FinishIndexX, int32 FinishIndexY)
 {
 
-	FNode StartNode = NodesArray[StartIndexX][StartIndexY];
-	FNode FinishNode = NodesArray[FinishIndexX][FinishIndexY];
+	FNode *StartNode = &NodesArray[StartIndexX][StartIndexY];
+	FNode *FinishNode = &NodesArray[FinishIndexX][FinishIndexY];
 
-	FinishNode.ParentNode = &StartNode;
-
-	TArray<FNode> EndArray = { StartNode, FinishNode };
-
-	TArray<FNode> OpenList;
-	TSet<FNode> OpenSet;
-	TSet<FNode> ClosedSet;
+	TArray<FNode*> OpenList;
+	TSet<FNode*> OpenSet;
+	TSet<FNode*> ClosedSet;
 	
 	OpenList.Heapify(FCompareNodes());
 
+	OpenList.HeapPush(StartNode, FCompareNodes());
 
-	return ReconstructPath(EndArray.Last());
+	FNode *CurrentNode = StartNode;
+
+	TArray<FNode*> NeighboursArray;
+
+	int32 Iteration = 0;
+	int32 NeighboursI = 0;
+
+	while (OpenList.Num())
+	{
+
+		UE_LOG(LogTemp, Log, TEXT("Iteration of PathFinding: %d"), Iteration);
+
+		/** Current Node now becomes the best Node available. The best node is deleted from the heap */
+		OpenList.HeapPop(CurrentNode, FCompareNodes());
+
+		if (CurrentNode == FinishNode)
+		{
+			CleanSet(ClosedSet);
+			CleanSet(OpenSet);
+			return ReconstructPath(*CurrentNode);
+		}
+
+		OpenSet.Remove(CurrentNode);
+		ClosedSet.Add(CurrentNode);
+
+		GetNeighbours(NeighboursArray, *CurrentNode);
+
+		for (FNode* Neighbour : NeighboursArray)
+		{
+
+			UE_LOG(LogTemp, Log, TEXT("Neighbour Iteration : %d"), NeighboursI);
+
+			if (ClosedSet.Contains(Neighbour))
+			{
+				continue;
+			}
+
+			int32 NewG = CurrentNode->GetG() + 1;
+
+			if (OpenSet.Contains(Neighbour) && NewG >= Neighbour->GetG())
+			{
+				UE_LOG(LogTemp, Log, TEXT("Line 133. "));
+				continue;
+			}
+
+			if (OpenSet.Contains(Neighbour))
+			{
+				OpenSet.Remove(Neighbour);
+				OpenList.Remove(Neighbour);
+				OpenList.Heapify(FCompareNodes());
+			}
+
+			Neighbour->ParentNode = CurrentNode;
+
+			Neighbour->SetG(NewG);
+			Neighbour->CalculateH(*FinishNode);
+
+			Neighbour->CalculateF();
+	
+			OpenList.HeapPush(Neighbour, FCompareNodes());
+
+			NeighboursI++;
+
+		}
+		
+		Iteration++;
+
+	}
+
+	CleanSet(ClosedSet);
+	CleanSet(OpenSet);
+
+	return GetEmptyArray();
 
 }
 
@@ -137,10 +212,13 @@ TArray<FNode> UGrid::ReconstructPath(FNode& LastNode)
 
 		if (!TraversalNode->ParentNode)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Parent Node is Nullptr. "));
 			break;
 		}
 
 		TraversalNode = TraversalNode->ParentNode;
+
+		UE_LOG(LogTemp, Log, TEXT("Succesfull Iteration. "));
 
 
 	}
@@ -151,12 +229,50 @@ TArray<FNode> UGrid::ReconstructPath(FNode& LastNode)
 
 }
 
+void UGrid::GetNeighbours(TArray<FNode*>& NeighboursArr, const FNode& Node)
+{
+
+	if (!NodesArray.IsValidIndex(Node.IndexX) || !NodesArray.IsValidIndex(Node.IndexY))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Given Node doesnt't Exist. "));
+		return;
+	}
+
+	if (NeighboursArr.Num()) // if it's not 0
+	{
+		UE_LOG(LogTemp, Error, TEXT("Given Array is going to get forcefully empty. All the Elements are going to be removed. "));
+		NeighboursArr.Empty();
+	}
+
+	// Checking if each Neighbour Node exists and if is not blocked, if so, it's added to the neighboursArray
+	if (NodesArray.IsValidIndex(Node.IndexX + 1) && !NodesArray[Node.IndexY + 1][Node.IndexY].IsBlocked)
+	{
+		NeighboursArr.Add(&NodesArray[Node.IndexX + 1][Node.IndexY]);
+	}
+
+	if (NodesArray.IsValidIndex(Node.IndexX - 1) && !NodesArray[Node.IndexY][Node.IndexY].IsBlocked)
+	{
+		NeighboursArr.Add(&NodesArray[Node.IndexX - 1][Node.IndexY]);
+	}
+
+	if (NodesArray[Node.IndexX].IsValidIndex(Node.IndexY + 1) && !NodesArray[Node.IndexY][Node.IndexY].IsBlocked)
+	{
+		NeighboursArr.Add(&NodesArray[Node.IndexX][Node.IndexY + 1]);
+	}
+
+	if (NodesArray[Node.IndexX].IsValidIndex(Node.IndexY - 1) && !NodesArray[Node.IndexY][Node.IndexY].IsBlocked)
+	{
+		NeighboursArr.Add(&NodesArray[Node.IndexX][Node.IndexY - 1]);
+	}
+
+}
+
 void UGrid::ReverseArray(TArray<FNode>& Array)
 {
 
-	int32 ArrSize = Array.Num() / 2;
+	int32 ArrSize = Array.Num();
 
-	for (int32 i = 0; i < ArrSize; i++)
+	for (int32 i = 0; i < ArrSize / 2; i++)
 	{
 	
 		SwapNodes(Array[i], Array[ArrSize - 1 - i]);
@@ -174,5 +290,21 @@ void UGrid::SwapNodes(FNode& NodeA, FNode& NodeB)
 	NodeA = NodeB;
 
 	NodeB = TempNode;
+
+}
+
+void UGrid::CleanSet(TSet<FNode*>& SetToClean)
+{
+
+	for (FNode* Node : SetToClean)
+	{
+
+		Node->SetG(INT32_MAX - 1);
+
+		Node->SetH(0);
+
+		Node->CalculateF();
+
+	}
 
 }

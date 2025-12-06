@@ -18,15 +18,15 @@ protected:
 
 	/** Node's G Cost ( Cost from Start ) */
 	UPROPERTY(VisibleAnywhere, Category = "Node Values")
-	int32 G;
+	int32 G = INT32_MAX - 1;
 
 	/** Node's H Cost ( Heuretic [ optimistic distance to Finish ] )*/
 	UPROPERTY(VisibleAnywhere, Category = "Node Values")
-	int32 H;
+	int32 H = 0;
 
 	/** Node's F Cost ( Sum Of G And H Cost ) */
 	UPROPERTY(VisibleAnywhere, Category = "Node Values")
-	int32 F;
+	int32 F = INT32_MAX - 1;
 
 
 	UPROPERTY(VisibleAnywhere, Category = "Node Properties")
@@ -47,10 +47,13 @@ public:
 
 	/** Is Node Blocked By Something? */
 	UPROPERTY(VisibleAnywhere, Category = "Node Properties")
-	bool IsBlocked;
+	bool IsBlocked = 0;
 
-	/** Calculating Heuristic in Manhattan Method */
+	/** Calculating Heuristic in Manhattan Method ( If Only Location is Passed )*/
 	void CalculateH(const FVector & FinishLocation);
+
+	/** Calculating Heuristic in Manhattan Method ( If Node Is Passed ) */
+	void CalculateH(const FNode& FinishNode);
 
 	static FVector2D NodeSize;
 
@@ -88,6 +91,12 @@ public:
 		G = NewG;
 	}
 
+	/** Only Use this Function when resetting Nodes */
+	FORCEINLINE void SetH(const int32& NewH)
+	{
+		H = NewH;
+	}
+
 	FORCEINLINE void SetLocation(const FVector& NewLocation)
 	{
 		NodeLocation = NewLocation;
@@ -101,13 +110,35 @@ public:
 	}
 
 
+	FORCEINLINE bool operator==(const FNode& OtherNode) const 
+	{
+		return IndexX == OtherNode.IndexX && IndexY == OtherNode.IndexY;
+	}
+
+	FORCEINLINE bool operator<(const FNode& B) const
+	{
+		return F < B.GetF();
+	}
+
 };
 
+// Function Neccesary for TSets 
+FORCEINLINE uint32 GetTypeHash(const FNode& Key)
+{
+	return HashCombine(::GetTypeHash(Key.IndexX), ::GetTypeHash(Key.IndexY));
+}
+
+// Struct Neccesary for Heaps
 struct FCompareNodes
 {
 	FORCEINLINE bool operator()(const FNode& A, const FNode& B) const
 	{
 		return A.GetF() < B.GetF();
+	}
+
+	FORCEINLINE bool operator()(const FNode* A, const FNode* B) const
+	{
+		return A->GetF() < B->GetF();
 	}
 };
 
@@ -150,6 +181,14 @@ protected:
 
 	/** Returns a TArray of Nodes To Get To the Last Node */
 	TArray<FNode> ReconstructPath(FNode& LastNode);
+
+	/** Returns Array of Node's Neighbours ( Only the valid ones ) */
+	void GetNeighbours(TArray<FNode*> & NeighboursArr, const FNode& Node);
+
+	/** Restoring All the Nodes in the Set to Default Values. Pass All the sets, where there are nodes.
+	Not resetting The main Array because most of the Nodes Would be cleaned without purpose. 
+	Cleaning Sets is a HUGE Performance boost. */
+	void CleanSet(TSet<FNode*> &SetToClean);
 
 public:
 
