@@ -84,12 +84,16 @@ void UGrid::CreateGrid(const FVector2D& NewGridSize, const FVector & GridCenter)
 TArray<FNode> UGrid::FindPath(int32 StartIndexX, int32 StartIndexY, int32 FinishIndexX, int32 FinishIndexY)
 {
 
+	TArray<FNode> PathArray;
+
 	FNode *StartNode = &NodesArray[StartIndexX][StartIndexY];
 	FNode *FinishNode = &NodesArray[FinishIndexX][FinishIndexY];
 
 	TArray<FNode*> OpenList;
 	TSet<FNode*> OpenSet;
 	TSet<FNode*> ClosedSet;
+
+	TArray<FNode*> UsedNodes = { StartNode };
 	
 	OpenList.Heapify(FCompareNodes());
 
@@ -112,9 +116,13 @@ TArray<FNode> UGrid::FindPath(int32 StartIndexX, int32 StartIndexY, int32 Finish
 
 		if (CurrentNode == FinishNode)
 		{
-			CleanSet(ClosedSet);
-			CleanSet(OpenSet);
-			return ReconstructPath(*CurrentNode);
+			
+			PathArray = ReconstructPath(*CurrentNode);
+			
+			CleanArray(UsedNodes);
+
+			return PathArray;
+
 		}
 
 		OpenSet.Remove(CurrentNode);
@@ -158,16 +166,19 @@ TArray<FNode> UGrid::FindPath(int32 StartIndexX, int32 StartIndexY, int32 Finish
 
 			NeighboursI++;
 
+			UsedNodes.Add(Neighbour);
+
 		}
 		
 		Iteration++;
 
 	}
 
-	CleanSet(ClosedSet);
-	CleanSet(OpenSet);
+	PathArray = ReconstructPath(*CurrentNode);
 
-	return GetEmptyArray();
+	CleanArray(UsedNodes);
+
+	return PathArray;
 
 }
 
@@ -293,10 +304,10 @@ void UGrid::SwapNodes(FNode& NodeA, FNode& NodeB)
 
 }
 
-void UGrid::CleanSet(TSet<FNode*>& SetToClean)
+void UGrid::CleanArray(TArray<FNode*>& ArrToClean)
 {
 
-	for (FNode* Node : SetToClean)
+	for (FNode* Node : ArrToClean)
 	{
 
 		Node->SetG(INT32_MAX - 1);
@@ -304,6 +315,8 @@ void UGrid::CleanSet(TSet<FNode*>& SetToClean)
 		Node->SetH(0);
 
 		Node->CalculateF();
+
+		Node->ParentNode = nullptr;
 
 	}
 
