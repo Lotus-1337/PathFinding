@@ -29,6 +29,8 @@ void APFDefaultPawn::BeginPlay()
 
 	FVector2D GridSize = FVector2D(32, 18);
 
+	Grid->CreateGrid(GridSize, FVector::ZeroVector);
+
 
 	FTransform NewTransform = FTransform(FRotator(-90.0f, -90.0f, 0.0f), FVector(0.0f, 0.0f, 970.0f), FVector::OneVector);
 
@@ -68,10 +70,6 @@ void APFDefaultPawn::BeginPlay()
 	NodeSizeInViewportY = ViewportSizeY / Grid->GetGridSize().Y;
 
 	NodesHUD->SetNodeSize(NodeSizeInViewportX, NodeSizeInViewportY);
-
-	FNode::NodeSize = FVector2D(NodeSizeInViewportX, NodeSizeInViewportY);
-
-	Grid->CreateGrid(GridSize, FVector::ZeroVector);
 
 }
 
