@@ -63,22 +63,22 @@ public:
 	}
 
 
-	FORCEINLINE int32 GetG()
+	FORCEINLINE int32 GetG() const
 	{
 		return G;
 	}
 
-	FORCEINLINE int32 GetH()
+	FORCEINLINE int32 GetH() const
 	{
 		return H;
 	}
 
-	FORCEINLINE int32 GetF()
+	FORCEINLINE int32 GetF() const
 	{
 		return F;
 	}
 
-	FORCEINLINE FVector GetLocation()
+	FORCEINLINE FVector GetLocation() const
 	{
 		return NodeLocation;
 	}
@@ -105,7 +105,7 @@ public:
 
 struct FCompareNodes
 {
-	FORCEINLINE bool operator()(FNode& A, FNode& B)
+	FORCEINLINE bool operator()(const FNode& A, const FNode& B) const
 	{
 		return A.GetF() < B.GetF();
 	}
