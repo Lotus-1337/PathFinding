@@ -130,13 +130,6 @@ void APFDefaultPawn::ClickMouse()
 
 	TArray<FNode> Arr = Grid->FindPath(StartIndexX, StartIndexY, FinishIndexX, FinishIndexY);
 
-	for (FNode& Node : Arr)
-	{
-
-		UE_LOG(LogTemp, Log, TEXT("Node Loc: %s | Node X: %d | Node Y: %d "), *Node.GetLocation().ToString(), Node.IndexX, Node.IndexY);
-
-	}
-
 	APlayerController* PC = Cast<APlayerController>(Controller);
 	if (!PC)
 	{
@@ -152,7 +145,7 @@ void APFDefaultPawn::ClickMouse()
 		return;
 	}
 
-	NodesHUD->SetNodesArray(MoveTemp(Arr));
+	NodesHUD->SetNodesArray(Arr);
 
 }
 

@@ -7,7 +7,7 @@
 #include "CanvasItem.h"
 #include "Engine/Canvas.h"
 
-void ANodesHUD::SetNodesArray(TArray<FNode>&& NewArr)
+void ANodesHUD::SetNodesArray(TArray<FNode>& NewArr)
 {
 
 	NodesArray = NewArr;

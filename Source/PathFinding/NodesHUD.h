@@ -34,7 +34,7 @@ public:
 	virtual void DrawHUD() override;
 
 	/** MoveTemps the given arr to NodesArray. Empties the NewArr. */
-	void SetNodesArray(TArray<FNode>&& NewArr);
+	void SetNodesArray(TArray<FNode>& NewArr);
 
 	void SetNodeSize(const float& X, const float& Y);
 

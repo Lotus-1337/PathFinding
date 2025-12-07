@@ -256,22 +256,22 @@ void UGrid::GetNeighbours(TArray<FNode*>& NeighboursArr, const FNode& Node)
 	}
 
 	// Checking if each Neighbour Node exists and if is not blocked, if so, it's added to the neighboursArray
-	if (NodesArray.IsValidIndex(Node.IndexX + 1) && !NodesArray[Node.IndexY + 1][Node.IndexY].IsBlocked)
+	if (NodesArray.IsValidIndex(Node.IndexX + 1) && !NodesArray[Node.IndexX + 1][Node.IndexY].IsBlocked)
 	{
 		NeighboursArr.Add(&NodesArray[Node.IndexX + 1][Node.IndexY]);
 	}
 
-	if (NodesArray.IsValidIndex(Node.IndexX - 1) && !NodesArray[Node.IndexY][Node.IndexY].IsBlocked)
+	if (NodesArray.IsValidIndex(Node.IndexX - 1) && !NodesArray[Node.IndexX - 1][Node.IndexY].IsBlocked)
 	{
 		NeighboursArr.Add(&NodesArray[Node.IndexX - 1][Node.IndexY]);
 	}
 
-	if (NodesArray[Node.IndexX].IsValidIndex(Node.IndexY + 1) && !NodesArray[Node.IndexY][Node.IndexY].IsBlocked)
+	if (NodesArray[Node.IndexX].IsValidIndex(Node.IndexY + 1) && !NodesArray[Node.IndexX][Node.IndexY + 1].IsBlocked)
 	{
 		NeighboursArr.Add(&NodesArray[Node.IndexX][Node.IndexY + 1]);
 	}
 
-	if (NodesArray[Node.IndexX].IsValidIndex(Node.IndexY - 1) && !NodesArray[Node.IndexY][Node.IndexY].IsBlocked)
+	if (NodesArray[Node.IndexX].IsValidIndex(Node.IndexY - 1) && !NodesArray[Node.IndexX][Node.IndexY - 1].IsBlocked)
 	{
 		NeighboursArr.Add(&NodesArray[Node.IndexX][Node.IndexY - 1]);
 	}
