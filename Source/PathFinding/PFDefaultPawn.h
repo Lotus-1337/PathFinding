@@ -38,6 +38,9 @@ protected:
 	class UInputAction* MouseClickAction;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	class UInputAction* MouseRightAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputMappingContext* MouseInputMapping;
 
 
@@ -80,5 +83,8 @@ public:
 	
 	UFUNCTION()
 	void ClickMouse();
+
+	UFUNCTION()
+	void RightClickMouse();
 
 };

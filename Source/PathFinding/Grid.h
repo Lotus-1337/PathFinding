@@ -60,11 +60,12 @@ public:
 
 	void GetTopLeftCornerLocation(float& X, float& Y);
 
+	// F = G + H
 	FORCEINLINE void CalculateF()
 	{
-		F = G + H;
+		F = H;
 	}
-
+	
 
 	FORCEINLINE int32 GetG() const
 	{
@@ -166,6 +167,10 @@ public:
 	
 	
 	[[nodiscard]] TArray<FNode> FindPath(int32 StartIndexX, int32 StartIndexY, int32 FinishIndexX, int32 FinishIndexY);
+
+	void BlockNodeAtIndex(int32 X, int32 Y);
+
+	FNode* GetNodeByIndex(int32 &X, int32& Y);
 
 protected:
 

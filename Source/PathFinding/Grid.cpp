@@ -140,9 +140,9 @@ TArray<FNode> UGrid::FindPath(int32 StartIndexX, int32 StartIndexY, int32 Finish
 				continue;
 			}
 
-			int32 NewG = CurrentNode->GetG() + 1;
+			//int32 NewG = CurrentNode->GetG() + 1;
 
-			if (OpenSet.Contains(Neighbour) && NewG >= Neighbour->GetG())
+			if (OpenSet.Contains(Neighbour) )//&& NewG >= Neighbour->GetG())
 			{
 				UE_LOG(LogTemp, Log, TEXT("Line 133. "));
 				continue;
@@ -157,7 +157,7 @@ TArray<FNode> UGrid::FindPath(int32 StartIndexX, int32 StartIndexY, int32 Finish
 
 			Neighbour->ParentNode = CurrentNode;
 
-			Neighbour->SetG(NewG);
+			//Neighbour->SetG(NewG);
 			Neighbour->CalculateH(*FinishNode);
 
 			Neighbour->CalculateF();
@@ -319,5 +319,28 @@ void UGrid::CleanArray(TArray<FNode*>& ArrToClean)
 		Node->ParentNode = nullptr;
 
 	}
+
+}
+
+FNode * UGrid::GetNodeByIndex(int32& X, int32& Y)
+{
+
+	if (!NodesArray.IsValidIndex(X) || !NodesArray[X].IsValidIndex(Y))
+	{
+		return nullptr;
+	}
+
+	return &NodesArray[X][Y];
+
+}
+
+void UGrid::BlockNodeAtIndex(int32 X, int32 Y)
+{
+	if (!NodesArray.IsValidIndex(X) || !NodesArray[X].IsValidIndex(Y))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Given Indexes are invalid. UGrid::BlockNodeAtIndex"));
+		return;
+	}
+	NodesArray[X][Y].IsBlocked = true;
 
 }

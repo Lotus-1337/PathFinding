@@ -14,6 +14,16 @@ void ANodesHUD::SetNodesArray(TArray<FNode>& NewArr)
 
 }
 
+void ANodesHUD::SetBlockedNodesArray(TArray<FNode>& NewArr)
+{
+	BlockedNodesArray = NewArr;
+}
+
+void ANodesHUD::AddBlockedNode(const FNode& NewBlockedNode)
+{
+	BlockedNodesArray.Add(NewBlockedNode);
+}
+
 void ANodesHUD::SetNodeSize(const float& X, const float& Y)
 {
 
@@ -59,6 +69,13 @@ void ANodesHUD::DrawHUD()
 
 		Index++;
 
+	}
+
+	for (FNode& BlockedNode : BlockedNodesArray)
+	{
+		float X = BlockedNode.IndexX * NodeSizeX;
+		float Y = BlockedNode.IndexY * NodeSizeY;
+		DrawRect(FLinearColor::Gray, X, Y, NodeSizeX, NodeSizeY);
 	}
 
 }

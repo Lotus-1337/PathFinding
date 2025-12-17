@@ -20,6 +20,8 @@ protected:
 
 	TArray<FNode> NodesArray;
 
+	TArray<FNode> BlockedNodesArray;
+
 	/** Node's Size X in Viewport */
 	UPROPERTY(VisibleAnywhere, Category = "HUD Properties")
 	float NodeSizeX = 10;
@@ -35,6 +37,11 @@ public:
 
 	/** MoveTemps the given arr to NodesArray. Empties the NewArr. */
 	void SetNodesArray(TArray<FNode>& NewArr);
+
+	/** Sets The Array Of Blocked Nodes */
+	void SetBlockedNodesArray(TArray<FNode>& NewArr);
+
+	void AddBlockedNode(const FNode& NewBlockedNode);
 
 	void SetNodeSize(const float& X, const float& Y);
 

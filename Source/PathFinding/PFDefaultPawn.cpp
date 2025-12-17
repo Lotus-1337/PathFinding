@@ -111,6 +111,7 @@ void APFDefaultPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 
 	EIC->BindAction(MouseClickAction, ETriggerEvent::Started, this, &APFDefaultPawn::ClickMouse);
+	EIC->BindAction(MouseRightAction, ETriggerEvent::Started, this, &APFDefaultPawn::RightClickMouse);
 	 
 	FInputModeGameAndUI InputMode;
 
@@ -146,6 +147,37 @@ void APFDefaultPawn::ClickMouse()
 	}
 
 	NodesHUD->SetNodesArray(Arr);
+
+}
+
+void APFDefaultPawn::RightClickMouse()
+{
+
+	float MouseX, MouseY;
+
+	APlayerController* PC = Cast<APlayerController>(Controller);
+	if (!PC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player Controller is invalid. APFDefaultPawn::ClickMouse"));
+		return;
+	}
+
+	PC->GetMousePosition(MouseX, MouseY);
+
+	int32 X = MouseX / NodeSizeInViewportX;
+	int32 Y = MouseY / NodeSizeInViewportY;
+
+	Grid->BlockNodeAtIndex(X, Y);
+
+	ANodesHUD* NodesHUD = Cast<ANodesHUD>(PC->GetHUD());
+
+	if (!NodesHUD)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Nodes HUD is invalid. APFDefaultPawn::ClickMouse"));
+		return;
+	}
+
+	NodesHUD->AddBlockedNode(*Grid->GetNodeByIndex(X, Y));
 
 }
 
