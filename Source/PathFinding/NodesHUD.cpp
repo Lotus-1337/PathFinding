@@ -38,6 +38,7 @@ void ANodesHUD::DrawHUD()
 
 	Super::DrawHUD();
 
+	DrawGrid();
 
 	if (!Canvas)
 	{
@@ -76,6 +77,27 @@ void ANodesHUD::DrawHUD()
 		float X = BlockedNode.IndexX * NodeSizeX;
 		float Y = BlockedNode.IndexY * NodeSizeY;
 		DrawRect(FLinearColor::Gray, X, Y, NodeSizeX, NodeSizeY);
+	}
+
+}
+
+void ANodesHUD::DrawGrid()
+{
+
+	if (!Canvas)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Canvas is Invalid. ANodesHUD::DrawGrid()"));
+		return;
+	}
+
+	for (int32 X = NodeSizeX; X <= Canvas->SizeX; X += NodeSizeX)
+	{
+		DrawLine(X, 0.0f, X, Canvas->SizeY, FLinearColor::White);
+	}
+
+	for (int32 Y = NodeSizeY; Y <= Canvas->SizeY; Y += NodeSizeY)
+	{
+		DrawLine(0.0f, Y, Canvas->SizeX, Y, FLinearColor::White);
 	}
 
 }

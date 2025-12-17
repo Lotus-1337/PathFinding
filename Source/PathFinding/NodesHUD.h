@@ -30,6 +30,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "HUD PRoperties")
 	float NodeSizeY = 10;
 
+
+protected:
+
+	void DrawGrid();
 	
 public:
 
