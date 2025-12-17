@@ -89,6 +89,12 @@ TArray<FNode> UGrid::FindPath(int32 StartIndexX, int32 StartIndexY, int32 Finish
 	FNode *StartNode = &NodesArray[StartIndexX][StartIndexY];
 	FNode *FinishNode = &NodesArray[FinishIndexX][FinishIndexY];
 
+	if (FinishNode->IsBlocked || StartNode->IsBlocked)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Start or Finish Node is Blocked. Returning Empty Array. "));
+		return GetEmptyArray();
+	}
+
 	TArray<FNode*> OpenList;
 	TSet<FNode*> OpenSet;
 	TSet<FNode*> ClosedSet;
