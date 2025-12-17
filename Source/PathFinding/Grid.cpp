@@ -140,9 +140,9 @@ TArray<FNode> UGrid::FindPath(int32 StartIndexX, int32 StartIndexY, int32 Finish
 				continue;
 			}
 
-			//int32 NewG = CurrentNode->GetG() + 1;
+			int32 NewG = CurrentNode->GetG() + 1;
 
-			if (OpenSet.Contains(Neighbour) )//&& NewG >= Neighbour->GetG())
+			if (OpenSet.Contains(Neighbour) && NewG >= Neighbour->GetG())
 			{
 				UE_LOG(LogTemp, Log, TEXT("Line 133. "));
 				continue;
@@ -157,7 +157,7 @@ TArray<FNode> UGrid::FindPath(int32 StartIndexX, int32 StartIndexY, int32 Finish
 
 			Neighbour->ParentNode = CurrentNode;
 
-			//Neighbour->SetG(NewG);
+			Neighbour->SetG(NewG);
 			Neighbour->CalculateH(*FinishNode);
 
 			Neighbour->CalculateF();

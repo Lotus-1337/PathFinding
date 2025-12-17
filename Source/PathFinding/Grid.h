@@ -60,10 +60,9 @@ public:
 
 	void GetTopLeftCornerLocation(float& X, float& Y);
 
-	// F = G + H
 	FORCEINLINE void CalculateF()
 	{
-		F = H;
+		F = G + H;
 	}
 	
 
