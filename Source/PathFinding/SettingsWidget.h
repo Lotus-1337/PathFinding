@@ -14,6 +14,8 @@ class UVerticalBox;
 class UButton;
 class UCheckBox;
 
+class UStartWidget;
+
 class APFDefaultPawn;
 
 /**

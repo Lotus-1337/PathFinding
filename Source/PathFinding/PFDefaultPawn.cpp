@@ -9,6 +9,7 @@
 
 #include "Grid.h"
 #include "NodesHUD.h"
+#include "StartWidget.h"
 
 // Sets default values
 APFDefaultPawn::APFDefaultPawn()
@@ -71,6 +72,9 @@ void APFDefaultPawn::BeginPlay()
 	NodeSizeInViewportY = ViewportSizeY / Grid->GetGridSize().Y;
 
 	NodesHUD->SetNodeSize(NodeSizeInViewportX, NodeSizeInViewportY);
+
+	UStartWidget* StartWidget = CreateWidget<UStartWidget>(GetWorld(), StartWidgetClass);
+	StartWidget->SetPawn(this);
 
 }
 

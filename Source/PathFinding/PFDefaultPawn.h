@@ -14,7 +14,7 @@ class USettingsWidget;
 
 
 
-enum class EGridSettings;
+enum class EGridSettings : uint8;
 
 
 // What are we going to do next?

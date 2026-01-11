@@ -43,7 +43,7 @@ void UStartWidget::ShowSettings()
 		return;
 	}
 
-	USettingsWidget* SettingsWidget = CreateWidget<USettingsWidget>(Pawn->SettingsWidgetClass);
+	USettingsWidget* SettingsWidget = CreateWidget<USettingsWidget>(Pawn->GetWorld(), Pawn->SettingsWidgetClass);
 
 	if (!SettingsWidget)
 	{
