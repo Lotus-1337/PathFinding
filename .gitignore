@@ -72,3 +72,11 @@ Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+PathFinding/Windows/Engine/Binaries/ThirdParty/MaterialX/libraries/bxdf/lama/lama_dielectric.mtlx
+/PathFinding/Windows/Engine/Binaries/ThirdParty/MaterialX
+/PathFinding/Windows/Engine/Binaries/ThirdParty/Vulkan
+/PathFinding/Windows/Engine/Binaries/ThirdParty/Vulkan
+/PathFinding/Windows/Engine/Content/SlateDebug
+/PathFinding/Windows/Engine/Extras
+/PathFinding/Windows
+PathFinding.zip
