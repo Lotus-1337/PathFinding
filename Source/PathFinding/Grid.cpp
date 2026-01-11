@@ -17,6 +17,20 @@ void FNode::CalculateH(const FNode& FinishNode)
 		(FMath::Abs(IndexY - FinishNode.IndexY));
 }
 
+void FNode::EuclideanH(const FVector& FinishLocation)
+{
+	// Square root of X dist ^2 + Y dist ^2
+	H = FMath::Sqrt(FMath::Square(NodeLocation.X - FinishLocation.X) / FNode::NodeSize.X) +
+					(FMath::Square(NodeLocation.Y - FinishLocation.X) / FNode::NodeSize.Y);
+}
+
+void FNode::EuclideanH(const FNode& FinishNode)
+{
+	// Square root of X dist ^2 + Y dist ^2
+	H = FMath::Sqrt(FMath::Square<float>(IndexX - FinishNode.IndexX) +
+					FMath::Square<float>(IndexY - FinishNode.IndexY));
+}
+
 void FNode::GetTopLeftCornerLocation(float& X, float& Y)
 {
 
@@ -170,9 +184,8 @@ TArray<FNode> UGrid::FindPath(int32 StartIndexX, int32 StartIndexY, int32 Finish
 			Neighbour->ParentNode = CurrentNode;
 
 			Neighbour->SetG(NewG);
-			Neighbour->CalculateH(*FinishNode);
 
-			Neighbour->CalculateF();
+			CalculateNodeValues(Neighbour, FinishNode);
 	
 			OpenList.HeapPush(Neighbour, FCompareNodes());
 
@@ -191,6 +204,35 @@ TArray<FNode> UGrid::FindPath(int32 StartIndexX, int32 StartIndexY, int32 Finish
 	CleanArray(UsedNodes);
 
 	return PathArray;
+
+}
+
+void UGrid::CalculateNodeValues(FNode* Node, FNode * FinishNode)
+{
+
+	if (!Node)
+	{
+		return;
+	}
+
+	if (GridSettings == EGridSettings::EUCLIDEAN || GridSettings == EGridSettings::GREEDY_EUCLIDEAN)
+	{
+		Node->EuclideanH(*FinishNode);
+	}
+	else
+	{
+		Node->CalculateH(*FinishNode);
+	}
+
+	if (GridSettings == EGridSettings::GREEDY || GridSettings == EGridSettings::GREEDY_EUCLIDEAN)
+	{
+		Node->CalculateGreedyF();
+	}
+	else
+	{
+		Node->CalculateF();
+	}
+
 
 }
 

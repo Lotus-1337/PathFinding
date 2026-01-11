@@ -9,6 +9,12 @@
 class UCameraComponent;
 
 class UGrid;
+class UStartWidget;
+class USettingsWidget;
+
+
+
+enum class EGridSettings;
 
 
 // What are we going to do next?
@@ -25,6 +31,8 @@ UCLASS()
 class PATHFINDING_API APFDefaultPawn : public APawn
 {
 	GENERATED_BODY()
+
+	friend class UStartWidget;
 
 protected:
 
@@ -43,6 +51,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputMappingContext* MouseInputMapping;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UStartWidget> StartWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<USettingsWidget> SettingsWidgetClass;
 
 protected:
 
@@ -50,6 +63,8 @@ protected:
 	UGrid *Grid;
 
 	EClickingState State;
+
+	EGridSettings GridSettings;
 
 	int32 StartIndexX; 
 	int32 StartIndexY;
@@ -59,6 +74,9 @@ protected:
 
 	int32 NodeSizeInViewportX;
 	int32 NodeSizeInViewportY;
+
+	UPROPERTY(VisibleAnywhere, Category = "Widgets")
+	bool HasGameStarted;
 
 public:
 	// Sets default values for this pawn's properties
@@ -81,10 +99,17 @@ protected:
 
 public:
 	
+	void OnGameStarted();
+
 	UFUNCTION()
 	void ClickMouse();
 
 	UFUNCTION()
 	void RightClickMouse();
+
+	FORCEINLINE void SetSettings(EGridSettings NewGridSettings)
+	{
+		GridSettings = NewGridSettings;
+	}
 
 };

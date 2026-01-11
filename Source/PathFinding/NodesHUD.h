@@ -30,6 +30,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "HUD PRoperties")
 	float NodeSizeY = 10;
 
+public:
+
+	UPROPERTY(EditAnywhere, Category = "AAA")
+	bool HasGameStarted = false;
 
 protected:
 

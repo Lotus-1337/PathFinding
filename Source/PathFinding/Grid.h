@@ -55,6 +55,12 @@ public:
 	/** Calculating Heuristic in Manhattan Method ( If Node Is Passed ) */
 	void CalculateH(const FNode& FinishNode);
 
+	/** Calculating Heuristic in Euclidesian Method ( If Only Location is Passed )*/
+	void EuclideanH(const FVector& FinishLocation);
+
+	/** Calculating Heuristic in Euclidesian Method ( If Node Is Passed ) */
+	void EuclideanH(const FNode& FinishNode);
+
 	static FVector2D NodeSize;
 
 
@@ -63,6 +69,11 @@ public:
 	FORCEINLINE void CalculateF()
 	{
 		F = G + H;
+	}
+
+	FORCEINLINE void CalculateGreedyF()
+	{
+		F = H;
 	}
 	
 
@@ -142,6 +153,17 @@ struct FCompareNodes
 	}
 };
 
+UENUM()
+enum class EGridSettings : uint8
+{
+
+	NORMAL,
+	GREEDY,
+	EUCLIDEAN,
+	GREEDY_EUCLIDEAN
+
+};
+
 /**
  * 
  */
@@ -159,6 +181,8 @@ protected:
 
 	/** Location of the Starting Node */
 	FVector StartingNodeLocation;
+
+	EGridSettings GridSettings;
 
 public:
 
@@ -194,6 +218,9 @@ protected:
 	Cleaning that Array is a HUGE Performance boost. */
 	void CleanArray(TArray<FNode*> &ArrToClean);
 
+	/** Calculating H and F cost based on GridSettings */
+	void CalculateNodeValues(FNode* Node, FNode * FinishNode);
+
 public:
 
 	// INLINES
@@ -202,6 +229,11 @@ public:
 	FORCEINLINE FVector2D GetGridSize()
 	{
 		return GridSize;
+	}
+
+	FORCEINLINE void SetGridSettings(EGridSettings NewGridSettings)
+	{
+		GridSettings = NewGridSettings;
 	}
 
 };

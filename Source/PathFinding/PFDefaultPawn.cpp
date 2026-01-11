@@ -59,6 +59,7 @@ void APFDefaultPawn::BeginPlay()
 		return;
 	}
 
+
 	int32 ViewportSizeX;
 	int32 ViewportSizeY;
 	PC->GetViewportSize(ViewportSizeX, ViewportSizeY);
@@ -77,6 +78,28 @@ void APFDefaultPawn::BeginPlay()
 void APFDefaultPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+}
+
+void APFDefaultPawn::OnGameStarted()
+{
+
+	APlayerController* PC = Cast<APlayerController>(Controller);
+	if (!PC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player Controller is invalid. APFDefaultPawn::BeginPlay"));
+		return;
+	}
+
+	ANodesHUD* NodesHUD = Cast<ANodesHUD>(PC->GetHUD());
+
+	if (!NodesHUD)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Nodes HUD is invalid. APFDefaultPawn::BeginPlay"));
+		return;
+	}
+
+	NodesHUD->HasGameStarted = true;
 
 }
 

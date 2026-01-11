@@ -38,6 +38,11 @@ void ANodesHUD::DrawHUD()
 
 	Super::DrawHUD();
 
+	if (!HasGameStarted)
+	{
+		return;
+	}
+
 	DrawGrid();
 
 	if (!Canvas)
